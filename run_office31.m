@@ -1,8 +1,4 @@
-% =====================================================================
-% Code for conference paper:
-% Cross-domain error adaptation for unsupervised domain adaptation, ICDM2020
-% By Fengli Cui, Yinghao Chen, MF1933011@smail.nju.edu.cn
-% =====================================================================
+
 clearvars;
 t0 = clock;
 addpath('./utils/');
@@ -43,7 +39,7 @@ for source_domain_index = 1:length(domains)
         %% Proposed method:
         d = 128;
         T = 11;
-        [ acc,acc_per_class ]= CDEA(domainS_features,domainS_labels,domainT_features,domainT_labels,d,T,options);%change by cyh
+        [ acc,acc_per_class ]= CDE(domainS_features,domainS_labels,domainT_features,domainT_labels,d,T,options);%change by cyh
         count = count + 1;
         all_acc_per_class(count,:) = mean(acc_per_class,2);
         all_acc_per_image(count,:) = acc;
