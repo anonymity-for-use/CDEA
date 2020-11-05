@@ -1,13 +1,9 @@
-% =====================================================================
-% Code for conference paper:
-% Cross-domain error adaptation for unsupervised domain adaptation, ICDM2020
-% By Fengli Cui, Yinghao Chen, MF1933011@smail.nju.edu.cn
-% =====================================================================
-%% ·Ö²¼¶ÔÆë Ñ§Ï°Ò»¸ö¾ØÕóP domain invariant yet discriminative subspace
-%% Z¦¸Z'P = ¦ÁZHZ'P¦È 
-%% ¦¸ = Q^(all) + ¦ÄI
+
+%% åˆ†å¸ƒå¯¹é½ å­¦ä¹ ä¸€ä¸ªçŸ©é˜µP domain invariant yet discriminative subspace
+%% ZÎ©Z'P = Î±ZHZ'PÎ¸ 
+%% Î© = Q^(all) + Î´I
 %% Qall = Qcc + lambda * M - beta * Q_c1 - gamma * Q_d + eta * L;
-%% Qcc ·ÖÀàÆ÷Îó²îÏî£»M£ºMMD matrix£»Q_c1: other K-1 classes; Q_d: cross-domain error; L£ºDiscriminative matrix£»²ÎÊı£º¦Ã,¦Ë,¦Ç,¦Ä
+%% Qcc åˆ†ç±»å™¨è¯¯å·®é¡¹ï¼›Mï¼šMMD matrixï¼›Q_c1: other K-1 classes; Q_d: cross-domain error; Lï¼šDiscriminative matrixï¼›å‚æ•°ï¼šÎ³,Î»,Î·,Î´
 
 function P = constructP(Xs,Ys,Xt,Yt_pseudo, W,options)
 
@@ -50,7 +46,7 @@ M = lambda * (e*e')* C;  % marginal MMD
 Qnew = zeros(ns+nt);
 
 if ~isempty(Yt_pseudo)
-    % É¸Ñ¡³ölabel²»Îª-1µÄÑù±¾
+    % ç­›é€‰å‡ºlabelä¸ä¸º-1çš„æ ·æœ¬
     idx = find(Yt_pseudo ~= -1);
     Xt = Xt(idx(1,:), :);
     Yt_pseudo = Yt_pseudo(idx);
