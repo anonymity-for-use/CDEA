@@ -1,9 +1,5 @@
-% =====================================================================
-% Code for conference paper:
-% Cross-domain error adaptation for unsupervised domain adaptation, ICDM2020
-% By Fengli Cui, Yinghao Chen, MF1933011@smail.nju.edu.cn
-% =====================================================================
-function [acc, acc_per_class] = CDEA(domainS_features,domainS_labels,domainT_features,domainT_labels,d,T,options)
+
+function [acc, acc_per_class] = CDEM(domainS_features,domainS_labels,domainT_features,domainT_labels,d,T,options)
 num_iter = T;
 options.ReducedDim = d;
 options.alpha = 1;
@@ -18,7 +14,7 @@ p = 1;
 predLabels = [];
 pseudoLabels = [];
 for iter = 1:num_iter
-	% ¼ÆËãP¾ØÕóµÄfunction
+	% è®¡ç®—PçŸ©é˜µçš„function
     P = constructP(domainS_features,domainS_labels,domainT_features,pseudoLabels, W,options);
     domainS_proj = domainS_features*P;
     domainT_proj = domainT_features*P;
@@ -45,32 +41,32 @@ for iter = 1:num_iter
     probMatrix = probMatrix1 * (1-iter./num_iter) + probMatrix2 * iter./num_iter;
     [prob,predLabels] = max(probMatrix');
     
-    %% ÌôÑ¡p1ºÍp2Ô¤²âclassÒ»ÑùµÄÀà
+    %% æŒ‘é€‰p1å’Œp2é¢„æµ‹classä¸€æ ·çš„ç±»
     [~,I1] = max(probMatrix1');
     [~,I2] = max(probMatrix2');
-    samePredict = find(I1 == I2); % P1 P2Ô¤²âÏàµÈµÄÏÂ±ê¼¯ºÏ
-    prob1 = prob(samePredict);  % È¡³öÕâĞ©Ô¤²âÒ»ÖÂÑù±¾µÄ¸ÅÂÊ
-    predLabels1 = predLabels(samePredict);  % È¡³öÕâĞ©Ô¤²âÒ»ÖÂÑù±¾µÄÔ¤²â±êÇ©
+    samePredict = find(I1 == I2); % P1 P2é¢„æµ‹ç›¸ç­‰çš„ä¸‹æ ‡é›†åˆ
+    prob1 = prob(samePredict);  % å–å‡ºè¿™äº›é¢„æµ‹ä¸€è‡´æ ·æœ¬çš„æ¦‚ç‡
+    predLabels1 = predLabels(samePredict);  % å–å‡ºè¿™äº›é¢„æµ‹ä¸€è‡´æ ·æœ¬çš„é¢„æµ‹æ ‡ç­¾
     
     p=iter/num_iter;
     p = max(p,0);
-    [sortedProb,index] = sort(prob1);  % ¶ÔÔ¤²âÒ»ÖÂÑù±¾µÄÔ¤²â¸ÅÂÊÅÅĞò£¬µÃµ½µÄindex¶ÔÓ¦samePredictµÄÏÂ±ê
+    [sortedProb,index] = sort(prob1);  % å¯¹é¢„æµ‹ä¸€è‡´æ ·æœ¬çš„é¢„æµ‹æ¦‚ç‡æ’åºï¼Œå¾—åˆ°çš„indexå¯¹åº”samePredictçš„ä¸‹æ ‡
     sortedPredLabels = predLabels1(index);
     trustable = zeros(1,length(prob1));
-    %% ´ÓÃ¿¸öÀàÖĞ°´ÕÕÔ¤ÉèÌõ¼şºÍÀàÆ½ºâË¼ÏëÌôÑ¡Ñù±¾
+    %% ä»æ¯ä¸ªç±»ä¸­æŒ‰ç…§é¢„è®¾æ¡ä»¶å’Œç±»å¹³è¡¡æ€æƒ³æŒ‘é€‰æ ·æœ¬
     for i = 1:num_class
         ntc = length(find(predLabels==i));
         ntc_same = length(find(predLabels1 == i));
-        % Òª´ÓÔ¤²âÒ»ÖÂÑù±¾ÖĞÕÒµ±Ç°class£¬×¢Òâ¶şÕßindexÒªÒ»ÖÂ£¬ÏÖÔÚ¶¼ÊÇsamePredictÖĞµÄÏÂ±ê
+        % è¦ä»é¢„æµ‹ä¸€è‡´æ ·æœ¬ä¸­æ‰¾å½“å‰classï¼Œæ³¨æ„äºŒè€…indexè¦ä¸€è‡´ï¼Œç°åœ¨éƒ½æ˜¯samePredictä¸­çš„ä¸‹æ ‡
         thisClassProb = sortedProb(sortedPredLabels==i);
         if length(thisClassProb)>0
-            %´ÓÃ¿¸öÀàÖĞ°´ÕÕÔ¤ÉèÌõ¼şºÍÀàÆ½ºâË¼ÏëÌôÑ¡³ömin(iter/num_iter * nc, sameDc)¸öÑù±¾
+            %ä»æ¯ä¸ªç±»ä¸­æŒ‰ç…§é¢„è®¾æ¡ä»¶å’Œç±»å¹³è¡¡æ€æƒ³æŒ‘é€‰å‡ºmin(iter/num_iter * nc, sameDc)ä¸ªæ ·æœ¬
             minProb = thisClassProb(max(ntc_same-(floor(p*ntc)+1) , 1));
-            % ÕÒ³öÔ¤²âÒ»ÖÂÑù±¾ÖĞÔ¤²âÖµ´óÓÚ×îĞ¡Ô¤²âãĞÖµµÄÑù±¾£¬×¢Òâ£¬µÃµ½µÄÊÇsamePredictÖĞµÄÏÂ±ê
+            % æ‰¾å‡ºé¢„æµ‹ä¸€è‡´æ ·æœ¬ä¸­é¢„æµ‹å€¼å¤§äºæœ€å°é¢„æµ‹é˜ˆå€¼çš„æ ·æœ¬ï¼Œæ³¨æ„ï¼Œå¾—åˆ°çš„æ˜¯samePredictä¸­çš„ä¸‹æ ‡
             trustable = trustable+ (prob1>minProb).*(predLabels1==i);
         end
     end
-    % ÕÒµ½ÕæÕı¶ÔÓ¦Ä¿±êÓòÑù±¾µÄindex
+    % æ‰¾åˆ°çœŸæ­£å¯¹åº”ç›®æ ‡åŸŸæ ·æœ¬çš„index
     true_index = samePredict(trustable==1);
     pseudoLabels = predLabels;
     trustable = zeros(1, length(prob));
