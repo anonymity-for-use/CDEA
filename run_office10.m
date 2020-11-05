@@ -1,8 +1,4 @@
-% =====================================================================
-% Code for conference paper:
-% Cross-domain error adaptation for unsupervised domain adaptation, ICDM2020
-% By Fengli Cui, Yinghao Chen, MF1933011@smail.nju.edu.cn
-% =====================================================================
+
 %% Loading Data:
 clearvars;
 % tic
@@ -44,7 +40,7 @@ for source_domain_index = 1:length(domains)
        num_class = length(unique(domainT_labels));
             
        %% Proposed method:   
-       [acc, acc_per_class] = CDEA(domainS_features, domainS_labels, domainT_features, domainT_labels, d, T, options);
+       [acc, acc_per_class] = CDE(domainS_features, domainS_labels, domainT_features, domainT_labels, d, T, options);
        
        count = count + 1;
        all_acc_per_class(count,:) = mean(acc_per_class,2);
@@ -53,7 +49,7 @@ for source_domain_index = 1:length(domains)
 end
 mean_acc_per_class = mean(all_acc_per_class,1);
 mean_acc_per_image = mean(all_acc_per_image,1);
-% ------Êä³öÃ¿¸ötaskT´Îµü´ú×î¸ß×¼È·ÂÊºÍ12¸ötaskÆ½¾ù×¼È·ÂÊ------
+% ------è¾“å‡ºæ¯ä¸ªtaskTæ¬¡è¿­ä»£æœ€é«˜å‡†ç¡®ç‡å’Œ12ä¸ªtaskå¹³å‡å‡†ç¡®ç‡------
 acc_per_task = max(all_acc_per_image,[],2);
 fprintf('\n---lamda=%0.2f, gamma=%0.4f, beta=%0.4f, eta=%0.4f, sigma=%0.2f, d1=%d, d2=%d ---\n',options.lambda, options.gamma,options.beta,options.eta,options.sigma, options.ReducedDim, d);
 acc_per_task
